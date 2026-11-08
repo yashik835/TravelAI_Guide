@@ -1,0 +1,258 @@
+ 
+<html>
+
+<head>
+    <title>Travel Guide</title>
+
+    <style>
+        body{
+            margin:0;
+            min-height:100vh;
+            background-image:url("images/background.jpeg");
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            background-attachment:fixed;
+        }
+
+        .title{
+            text-align:center;
+            color:white;
+            padding-top:30px;
+            font-size:40px;
+        }
+		.search-container{
+			display:flex;
+			justify-content:center;
+			align-items:center;
+			margin:30px auto;
+			gap:10px;
+		}
+		.search-container input{
+			width:350px;
+			padding:12px 18px;
+			font-size:16px;
+			border:2px solid #1565c0;
+			border-radius:30px;
+			outline:none;
+		}
+		.search-container button{
+			padding:12px 25px;
+			background:#1565c0;
+			color:white;
+			border:none;
+			border-radius:30px;
+			font-size:16px;
+			cursor:pointer;
+			transition:0.3s;
+		}
+		#loading {
+		display: none;
+		text-align: center;
+		color: white;
+		margin-top: 30px;
+		}
+		.book{
+    width:900px;
+    margin:40px auto;
+    display:flex;
+    background:#fffdf7;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+.page{
+    width:50%;
+    padding:35px;
+    min-height:420px;
+}
+
+.left-page{
+    background:#CEAF8C;
+    border-right:3px solid #d4c39b;
+}
+
+.right-page{
+    background:#D8D0B9;
+}
+
+.left-page h2,
+.right-page h2{
+    text-align:center;
+    color:#1565c0;
+}
+
+.left-page p{
+    font-size:18px;
+    margin:18px 0;
+}
+
+#advice{
+    text-align:justify;
+    line-height:1.8;
+    font-size:17px;
+}
+#options{
+    display:none;
+    position:fixed;
+    top:70%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    z-index:1000;
+
+    width:500px;
+    padding:30px;
+
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(10px);
+
+    border:2px solid white;
+    border-radius:15px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.4);
+
+    
+    grid-template-columns:1fr 1fr;
+    gap:25px 40px;
+	
+	max-height:420px;        /* Height of the panel */
+    overflow-y:auto;
+}
+#infoOptions{
+    display:none;
+    position:fixed;
+    top:70%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    z-index:1000;
+
+    width:500px;
+    padding:30px;
+
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(10px);
+
+    border:2px solid white;
+    border-radius:15px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.4);
+
+    
+    grid-template-columns:1fr 1fr;
+    gap:25px 40px;
+	
+	max-height:420px;        /* Height of the panel */
+    overflow-y:auto;
+}
+
+.item{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.item img{
+    width: 50px;
+    height: 50px;
+}
+
+.label{
+    font-size: 20px;
+    font-weight: bold;
+    color: white;   /* Change to black if needed */
+}
+
+    </style>
+</head>
+
+<body>
+
+<h1 class="title"><i>Travel Intelligent Guide</i></h1>
+<div class="search-container">
+<input type='text' id='location' list="places" placeholder='Search Location' >
+<datalist id="places">
+    <option value="Colombo">
+</datalist>
+
+<button onclick="showOptions()">Travel guide for an year</button>
+<button id="info" onclick="getInfo()">Essentials</button>
+</div>
+<div id="options">
+	<div class="item">
+		<img src="images/arrow.png" alt="Arrow">
+		<span class="label" onclick="goPast()">Past 3 Months Recommendation</span>
+	</div>
+
+	<div class="item">
+		<img src="images/arrow.png" alt="Arrow">
+		<span class="label" onclick="goTravel()">Next 9 months Recommendation</span>
+	</div>
+	
+</div>
+
+<div id="infoOptions">
+	<div class="item">
+		<img src="images/arrow.png" alt="Arrow">
+		<span class="label" onclick="getSightseeing()">Top sightseeings</span>
+	</div>
+	<div class="item">
+		<img src="images/arrow.png" alt="Arrow">
+		<span class="label"onclick="getVegRest()">Top Veg Restaurants</span>
+	</div>
+	<div class="item">
+		<img src="images/arrow.png" alt="Arrow">
+		<span class="label" onclick="getNonVegRest()">Top Non-Veg Restaurants</span>
+	</div>
+
+	<div class="item">
+		<img src="images/arrow.png" alt="Arrow">
+		<span class="label"onclick="getAbout()">About</span>
+	</div>
+	
+	
+	
+</div>
+	
+		
+
+<script>
+function showOptions()
+{
+document.getElementById("infoOptions").style.display = "none";
+document.getElementById("options").style.display="block";
+}
+function goTravel(){
+const location= document.getElementById("location").value;
+window.location.href="travel.html?location="+ encodeURIComponent(location)+"&type=travel";
+}
+function goPast(){
+const location= document.getElementById("location").value;
+window.location.href="travel.html?location="+ encodeURIComponent(location)+"&type=pasttravel";
+}
+
+function getInfo(){
+document.getElementById("options").style.display="none";
+document.getElementById("infoOptions").style.display="grid";
+}
+function getSightseeing(){
+const location= document.getElementById("location").value;
+window.location.href="travel.html?location="+ encodeURIComponent(location)+"&type=sightseeing";
+}
+function getVegRest(){
+const location= document.getElementById("location").value;
+window.location.href="travel.html?location="+ encodeURIComponent(location)+"&type=vegrest";
+}
+function getNonVegRest(){
+const location= document.getElementById("location").value;
+window.location.href="travel.html?location="+ encodeURIComponent(location)+"&type=nvegrest";
+}
+function getAbout(){
+const location= document.getElementById("location").value;
+window.location.href="travel.html?location="+ encodeURIComponent(location)+"&type=about";
+}
+function goCurrMonth()
+{const location= document.getElementById("location").value;
+window.location.href="travel.html?location="+ encodeURIComponent(location)+"&type=currmonth";
+}
+</script>
+</body>
+</html>

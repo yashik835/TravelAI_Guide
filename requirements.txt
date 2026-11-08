@@ -1,0 +1,15 @@
+pandas
+numpy
+requests
+matplotlib
+neuralforecast
+langchain-core
+langchain-openai
+python-dotenv
+geopy
+torch
+lightning
+pytorch-forecasting
+uvicorn
+fastapi
+uvicorn[standard]

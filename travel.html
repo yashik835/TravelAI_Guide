@@ -1,0 +1,759 @@
+
+<html>
+
+<head>
+    <title>Travel Guide</title>
+
+    <style>
+        body{
+            margin:0;
+            min-height:100vh;
+            background-image:url("images/background.jpeg");
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            background-attachment:fixed;
+        }
+
+        .title{
+            text-align:center;
+            color:white;
+            padding-top:30px;
+            font-size:40px;
+        }
+		#box{
+    display:block;
+ 
+	 margin:40px auto;
+    
+    z-index:1000;
+
+    width:700px;
+    padding:30px;
+
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(10px);
+
+    border:2px solid white;
+    border-radius:15px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.4);
+
+    
+    grid-template-columns:1fr 1fr;
+    gap:25px 40px;
+	
+	max-height:420px;        /* Height of the panel */
+    overflow-y:auto;
+}
+
+		.book{
+    width:900px;
+    margin:40px auto;
+    display:flex;
+    background:#fffdf7;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+	.books{
+	width:600px;
+     min-height:500px;
+    margin:40px auto;
+    padding:30px;
+    background-color:white;
+    border:2px solid #444;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    font-size:18px;
+    
+}
+
+.page{
+    width:50%;
+    padding:35px;
+    min-height:420px;
+}
+
+.left-page{
+    background:#CEAF8C;
+    border-right:3px solid #d4c39b;
+}
+
+.right-page{
+     background:#D8D0B9;
+}
+
+.left-page h2,
+.right-page h2{
+    text-align:center;
+    color:#1565c0;
+}
+
+.left-page p{
+    font-size:18px;
+    margin:18px 0;
+}
+
+#advice{
+    text-align:justify;
+    line-height:1.8;
+    font-size:17px;
+}
+
+button:disabled{
+
+    visibility:hidden;
+
+}
+.book-container{
+    width:900px;
+    display:flex;
+    align-items:center;
+}
+.page-content{
+    margin-top:30px;
+    font-size:20px;
+	color: white;
+}
+
+
+#box-wrapper{
+    width:760px;
+    margin:40px auto;
+}
+
+.navigation{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:15px;
+}
+#item{
+color:red;
+}
+
+.loading {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    padding: 40px;
+}
+
+.spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #007bff;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+    </style>
+</head>
+
+<body>
+<h2 class="title" id="pageTitle"></h2>
+<div id="results" ></div>
+
+
+<script>
+	
+	const params=new URLSearchParams(window.location.search);
+    const selectedlocation = params.get("location");
+	const type = params.get("type");
+	if (type === "travel") {
+	
+    document.getElementById("pageTitle").innerText =
+        "Next 8 Months Travel Guide";
+	document.getElementById("results").innerHTML = `
+    <div class="loading">
+        <div class="spinner"></div>
+        Generating your travel information...
+        <br>
+        Please wait.
+    </div>
+      `	;
+	 fetch(`/search?location=${encodeURIComponent(selectedlocation)}`)
+        .then(response => response.json())
+        
+			.then(data => {
+
+    let html = "";
+	console.log(typeof data);
+	console.log(Array.isArray(data));
+	console.log(data);
+	data = JSON.parse(data);
+	
+	
+    data.forEach(weather => {
+		const advice=weather.Travel_advice
+        html += `
+       <div class="book">
+
+                    <div class="page left-page">
+
+                        <h2>${weather.location}</h2>
+
+                        <p><b>Month:</b> ${weather.month}</p>
+
+                        <p><b>Temperature(Celsius):</b> ${weather.temperature}</p>
+
+                        <p><b>Rainfall(mm):</b> ${weather.rainfall}</p>
+
+                        <p><b>Snowfall(cm):</b> ${weather.snowfall}</p>
+
+                    </div>
+
+                    <div class="page right-page">
+
+                        <h2>Travel Advice</h2>
+
+                        <p><b>Recommended: </b> ${advice.recommendation}</p>
+
+						
+
+						<p><b>To Avoid: </b> ${advice.avoid}</p>
+
+						<p><b>Clothing to wear:</b> ${advice.clothing}</p>
+						
+
+						<p><b>Health Precautions:</b> ${advice.health_precautions}</p>
+
+						<p><b>Travel Timing:</b> ${advice.ideal_travel_timings}</p>
+
+						
+						<p><b>Warnings:</b> ${advice.travel_warnings}</p>
+					</div>
+				</div>
+
+        `;
+    });
+
+    document.getElementById("results").innerHTML = html;
+
+})
+            // Display the response in your book UI
+        
+        .catch(error => console.error(error));
+	}
+	if (type === "pasttravel") {
+    document.getElementById("pageTitle").innerText =
+        "Past 3 Months Travel Guide";
+	
+	document.getElementById("results").innerHTML = `
+    <div class="loading">
+        <div class="spinner"></div>
+        Generating your travel information...
+        <br>
+        Please wait.
+    </div>
+`	;
+	 fetch(`/pasttravel?location=${encodeURIComponent(selectedlocation)}`)
+        .then(response => response.json())
+        
+			.then(data => {
+
+    let html = "";
+	console.log(typeof data);
+	console.log(Array.isArray(data));
+	console.log(data);
+	
+	
+	
+	
+    data.forEach(weather => {
+		const advice=weather.Travel_advice
+        html += `
+       <div class="book">
+
+                    <div class="page left-page">
+
+                        <h2>${weather.location}</h2>
+
+                        <p><b>Month:</b> ${weather.month}</p>
+
+                        <p><b>Temperature(Celsius):</b> ${weather.temperature_mean}</p>
+
+                        <p><b>Rainfall(mm):</b> ${weather.rainfall}</p>
+
+                        <p><b>Snowfall(cm):</b> ${weather.snowfall}</p>
+
+                    </div>
+
+                    <div class="page right-page">
+
+                        <h2>Travel Advice</h2>
+
+                        <p><b>Recommended: </b> ${advice.recommendation}</p>
+
+						
+
+						<p><b>To Avoid: </b> ${advice.avoid}</p>
+
+						<p><b>Clothing to wear:</b> ${advice.clothing}</p>
+						
+
+						<p><b>Health Precautions:</b> ${advice.health_precautions}</p>
+
+						<p><b>Travel Timing:</b> ${advice.ideal_travel_timings}</p>
+
+						
+						<p><b>Warnings:</b> ${advice.travel_warnings}</p>
+					</div>
+				</div>
+
+        `;
+    });
+
+    document.getElementById("results").innerHTML = html;
+
+})
+            // Display the response in your book UI
+        
+        .catch(error => console.error(error));
+	}
+	else if (type === "sightseeing") {
+	
+    document.getElementById("pageTitle").innerText =
+        "Top Sightseeing Places";
+	document.getElementById("results").innerHTML =
+	`<div class="loading">
+        <div class="spinner"></div>
+        Generating your travel information...
+        <br>
+        Please wait.
+    </div>`	;
+		let currentPage = 1;
+	fetch(`/sightseeing?location=${encodeURIComponent(selectedlocation)}`)
+		.then(response => response.json())
+		
+			.then(data =>
+				{
+				let html="";
+				console.log(typeof data);
+				console.log(Array.isArray(data));
+				console.log(data);
+				
+				const totPages= data.length;
+				let sightseeing=data[currentPage-1];
+				function display_page(){
+				let sightseeing=data[currentPage-1];
+				document.getElementById("results").innerHTML =`
+				
+			<div id="box-wrapper">
+
+								
+				
+				<div id="box">
+					
+					<div class="page-content">
+						<p><b id="item">Name:</b> ${sightseeing.name}</p>
+						<p><b id="item">Category:</b> ${sightseeing.category}</p>
+						<p><b id="item">Location:</b> ${sightseeing.location}</p>
+						<p><b id="item">Details:</b> ${sightseeing.details}</p>
+						<p><b id="item">Timings:</b> ${sightseeing.timings}</p>
+					</div>
+				</div>
+				  <div class="navigation">
+					<button id="prevBtn" onclick="prevButton()">&#9664;</button>
+					<button id="nextBtn"  onclick="nextButton()">&#9654;</button>
+				</div>
+							
+						
+			</div>	
+					
+				
+				`;
+				};
+				
+				  
+				function updateButton(){
+					if(currentPage==1){
+					document.getElementById("prevBtn").disabled=true;
+					document.getElementById("nextBtn").disabled=false;
+					}
+					else if(currentPage>1 && currentPage<totPages)
+					{
+					document.getElementById("prevBtn").disabled=false;
+					document.getElementById("nextBtn").disabled=false;
+					}
+					else if(currentPage==totPages){
+					document.getElementById("prevBtn").disabled=false;
+					document.getElementById("nextBtn").disabled=true;
+					}
+				
+				}
+				
+				window.prevButton = function() {
+				
+					if(currentPage>1){
+					
+						
+						currentPage--;
+						
+						display_page();
+						updateButton();
+					}
+					
+					}
+					
+				 window.nextButton = function(){
+				
+					if(currentPage<totPages){
+						currentPage++;
+						
+						display_page();
+						updateButton();
+					}}
+				
+				display_page();
+				updateButton();
+	
+					
+			
+			})
+			.catch(error => console.error(error));
+			}
+
+	else if (type === "vegrest") {
+	
+    document.getElementById("pageTitle").innerText =
+        "Top Veg Restaurants";
+	document.getElementById("results").innerHTML = `
+    <div class="loading">
+        <div class="spinner"></div>
+        Generating your travel information...
+        <br>
+        Please wait.
+    </div>
+`	;	
+		let currentPage = 1;
+	fetch(`/vrestaurant?location=${encodeURIComponent(selectedlocation)}`)
+		.then(response => response.json())
+			.then(data =>
+				{
+				let html="";
+				console.log(typeof data);
+				console.log(Array.isArray(data));
+				console.log(data);
+				
+				const totPages= data.length;
+				let vegrest1=data[currentPage-1];
+				function display_page(){
+				let vegrest1=data[currentPage-1];
+				document.getElementById("results").innerHTML =`
+				
+			<div id="box-wrapper">
+
+								
+				
+				<div id="box">
+					
+					<div class="page-content">
+						<p><b id="item">Name:</b> ${vegrest1.name}</p>
+						<p><b id="item">Category:</b> ${vegrest1.category}</p>
+						<p><b id="item">Location:</b> ${vegrest1.location}</p>
+						<p><b id="item"> Menu Details:</b> ${vegrest1.menu_details}</p>
+						<p><b id="item">Timings:</b> ${vegrest1.timings}</p>
+					</div>
+				</div>
+				  <div class="navigation">
+					<button id="prevBtn" onclick="prevButton()">&#9664;</button>
+					<button id="nextBtn"  onclick="nextButton()">&#9654;</button>
+				</div>
+							
+						
+			</div>	
+					
+				
+				`;
+				};
+				
+				  
+				function updateButton(){
+					if(currentPage==1){
+					document.getElementById("prevBtn").disabled=true;
+					document.getElementById("nextBtn").disabled=false;
+					}
+					else if(currentPage>1 && currentPage<totPages)
+					{
+					document.getElementById("prevBtn").disabled=false;
+					document.getElementById("nextBtn").disabled=false;
+					}
+					else if(currentPage==totPages){
+					document.getElementById("prevBtn").disabled=false;
+					document.getElementById("nextBtn").disabled=true;
+					}
+				
+				}
+				
+				window.prevButton = function() {
+				
+					if(currentPage>1){
+					
+						
+						currentPage--;
+						
+						display_page();
+						updateButton();
+					}
+					
+					}
+					
+				 window.nextButton = function(){
+				
+					if(currentPage<totPages){
+						currentPage++;
+						
+						display_page();
+						updateButton();
+					}}
+				
+				display_page();
+				updateButton();
+	
+					
+			
+			})
+			.catch(error => console.error(error));
+			}
+			
+		else if (type === "nvegrest") {
+		
+    document.getElementById("pageTitle").innerText =
+        "Top Non-Veg Restaurants";
+	document.getElementById("results").innerHTML = `
+    <div class="loading">
+        <div class="spinner"></div>
+        Generating your travel information...
+        <br>
+        Please wait.
+    </div>
+`	;
+		let currentPage = 1;
+	fetch(`/nvrestaurant?location=${encodeURIComponent(selectedlocation)}`)
+		.then(response => response.json())
+			.then(data =>
+				{
+				let html="";
+				console.log(typeof data);
+				console.log(Array.isArray(data));
+				console.log(data);
+				
+				const totPages= data.length;
+				let nvegrest1=data[currentPage-1];
+				function display_page(){
+				let nvegrest1=data[currentPage-1];
+				document.getElementById("results").innerHTML =`
+				
+			<div id="box-wrapper">
+
+								
+				
+				<div id="box">
+					
+					<div class="page-content">
+						<p><b id="item">Name:</b> ${nvegrest1.name}</p>
+						<p><b id="item">Category:</b> ${nvegrest1.category}</p>
+						<p><b id="item">Location:</b> ${nvegrest1.location}</p>
+						<p><b id="item"> Menu Details:</b> ${nvegrest1.menu_details}</p>
+						<p><b id="item">Timings:</b> ${nvegrest1.timings}</p>
+					</div>
+				</div>
+				  <div class="navigation">
+					<button id="prevBtn" onclick="prevButton()">&#9664;</button>
+					<button id="nextBtn"  onclick="nextButton()">&#9654;</button>
+				</div>
+							
+						
+			</div>	
+					
+				
+				`;
+				};
+				
+				  
+				function updateButton(){
+					if(currentPage==1){
+					document.getElementById("prevBtn").disabled=true;
+					document.getElementById("nextBtn").disabled=false;
+					}
+					else if(currentPage>1 && currentPage<totPages)
+					{
+					document.getElementById("prevBtn").disabled=false;
+					document.getElementById("nextBtn").disabled=false;
+					}
+					else if(currentPage==totPages){
+					document.getElementById("prevBtn").disabled=false;
+					document.getElementById("nextBtn").disabled=true;
+					}
+				
+				}
+				
+				window.prevButton = function() {
+				
+					if(currentPage>1){
+					
+						
+						currentPage--;
+						
+						display_page();
+						updateButton();
+					}
+					
+					}
+					
+				 window.nextButton = function(){
+				
+					if(currentPage<totPages){
+						currentPage++;
+						
+						display_page();
+						updateButton();
+					}}
+				
+				display_page();
+				updateButton();
+	
+					
+			
+			})
+			.catch(error => console.error(error));
+			}
+			
+			else if (type === "about") {
+	
+    document.getElementById("pageTitle").innerText =
+        `About ${selectedlocation}`;
+	document.getElementById("results").innerHTML = `
+    <div class="loading">
+        <div class="spinner"></div>
+        Generating your travel information...
+        <br>
+        Please wait.
+    </div>
+`	;
+		let currentPage = 1;
+	fetch(`/about?location=${encodeURIComponent(selectedlocation)}`)
+		.then(response => response.json())
+			
+			.then(data =>
+				{ if (Array.isArray(data)) {
+					data = Object.assign({}, ...data);
+					}
+				return data;})
+				.then(data =>{
+				let html="";
+				console.log(typeof data);
+				console.log(Array.isArray(data));
+				console.log(data);
+				
+				
+				
+		
+				let about1=data;
+				document.getElementById("results").innerHTML =`
+				
+			<div id="box-wrapper">
+
+								
+				
+				<div id="box">
+					
+					<div class="page-content">
+						
+						<p><b id="item">Languages spoken:</b> ${about1.languages}</p>
+						<p><b id="item">Religion followed:</b> ${about1.religion}</p>
+						<p><b id="item">Ethnic Groups:</b> ${about1.ethnic}</p>
+						<p><b id="item">Cuisine:</b> ${about1.cuisine}</p>
+					</div>
+				</div>
+				 
+						
+			</div>	
+					
+				
+					`;
+		
+	
+			})
+			.catch(error => console.error(error));
+			}
+	else if (type === "currmonth") {
+    document.getElementById("pageTitle").innerText =
+        "Current Month Travel Guide";
+		
+			 fetch(`/currmonth?location=${encodeURIComponent(selectedlocation)}`)
+        .then(response => response.json())
+        
+			.then(data => {
+
+    let html = "";
+	console.log(typeof data);
+	console.log(Array.isArray(data));
+	console.log(data);
+	
+	
+	
+	
+    data.forEach(weather => {
+		const advice=weather.Travel_advice
+        html += `
+       <div class="book">
+
+                    <div class="page left-page">
+
+                        <h2>${weather.location}</h2>
+
+                        <p><b>Month:</b> ${weather.month}</p>
+
+                        <p><b>Temperature(Celsius):</b> ${weather.temperature_mean}</p>
+
+                        <p><b>Rainfall(mm):</b> ${weather.rainfall}</p>
+
+                        <p><b>Snowfall(cm):</b> ${weather.snowfall}</p>
+
+                    </div>
+
+                    <div class="page right-page">
+
+                        <h2>Travel Advice</h2>
+
+                        <p><b>Recommended: </b> ${advice.recommendation}</p>
+
+						
+
+						<p><b>To Avoid: </b> ${advice.avoid}</p>
+
+						<p><b>Clothing to wear:</b> ${advice.clothing}</p>
+						
+
+						<p><b>Health Precautions:</b> ${advice.health_precautions}</p>
+
+						<p><b>Travel Timing:</b> ${advice.ideal_travel_timings}</p>
+
+						
+						<p><b>Warnings:</b> ${advice.travel_warnings}</p>
+					</div>
+				</div>
+
+        `;
+    });
+
+    document.getElementById("results").innerHTML = html;
+
+})
+  .catch(error => console.error(error));
+	}
+   
+
+</script>
+
+</body>
+</html>
