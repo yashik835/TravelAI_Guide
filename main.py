@@ -25,7 +25,7 @@ app.add_middleware(
 )
 
 
-model1=ChatOpenAI(model="gpt-6")
+model1=ChatOpenAI(model="gpt-6.1-terra")
 parser = JsonOutputParser()
 
 
