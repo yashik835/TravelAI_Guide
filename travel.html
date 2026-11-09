@@ -163,7 +163,7 @@ color:red;
 
 
 <script>
-	
+	const API_BASE = "https://travelai-guide.onrender.com";
 	const params=new URLSearchParams(window.location.search);
     const selectedlocation = params.get("location");
 	const type = params.get("type");
@@ -179,7 +179,8 @@ color:red;
         Please wait.
     </div>
       `	;
-	 fetch(`/search?location=${encodeURIComponent(selectedlocation)}`)
+	 
+	 fetch(`${API_BASE}/search?location=${encodeURIComponent(selectedlocation)}`)
         .then(response => response.json())
         
 			.then(data => {
@@ -254,7 +255,7 @@ color:red;
         Please wait.
     </div>
 `	;
-	 fetch(`/pasttravel?location=${encodeURIComponent(selectedlocation)}`)
+	 fetch(`${API_BASE}/pasttravel?location=${encodeURIComponent(selectedlocation)}`)
         .then(response => response.json())
         
 			.then(data => {
@@ -330,7 +331,7 @@ color:red;
         Please wait.
     </div>`	;
 		let currentPage = 1;
-	fetch(`/sightseeing?location=${encodeURIComponent(selectedlocation)}`)
+	fetch(`${API_BASE}/sightseeing?location=${encodeURIComponent(selectedlocation)}`)
 		.then(response => response.json())
 		
 			.then(data =>
@@ -434,7 +435,7 @@ color:red;
     </div>
 `	;	
 		let currentPage = 1;
-	fetch(`/vrestaurant?location=${encodeURIComponent(selectedlocation)}`)
+	fetch(`${API_BASE}/vrestaurant?location=${encodeURIComponent(selectedlocation)}`)
 		.then(response => response.json())
 			.then(data =>
 				{
@@ -537,7 +538,7 @@ color:red;
     </div>
 `	;
 		let currentPage = 1;
-	fetch(`/nvrestaurant?location=${encodeURIComponent(selectedlocation)}`)
+	fetch(`${API_BASE}/nvrestaurant?location=${encodeURIComponent(selectedlocation)}`)
 		.then(response => response.json())
 			.then(data =>
 				{
@@ -689,7 +690,7 @@ color:red;
     document.getElementById("pageTitle").innerText =
         "Current Month Travel Guide";
 		
-			 fetch(`/currmonth?location=${encodeURIComponent(selectedlocation)}`)
+			 fetch(`${API_BASE}/currmonth?location=${encodeURIComponent(selectedlocation)}`)
         .then(response => response.json())
         
 			.then(data => {
