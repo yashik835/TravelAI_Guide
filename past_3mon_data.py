@@ -71,7 +71,7 @@ def get_travel_data(location):
     if current_date.month==1 :
         start_month=current_date.month+9
         end_month=start_month+2
-    else if current_date.month==2 or current_date.month==3:
+    elif current_date.month==2 or current_date.month==3:
         start_month=current_date.month+9
         end_month=current_date.month-1
     else:
