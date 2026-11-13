@@ -4,6 +4,8 @@ from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import JsonOutputParser
 from pathlib import Path
 
+from past_3mon_data import get_travel_data as get_past_travel_data
+
 
 from dotenv import load_dotenv
 import os
@@ -33,6 +35,15 @@ parser = JsonOutputParser()
 def search_location(location:str):
     try:
         return get_travel_data(location)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
+@app.get("/pasttravel")
+def get_pasttravel(location:str):
+    try:
+        return get_past_travel_data(location)
     except Exception as e:
         import traceback
         traceback.print_exc()
