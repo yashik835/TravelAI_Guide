@@ -5,6 +5,11 @@ from langchain_core.output_parsers import JsonOutputParser
 from pathlib import Path
 
 from past_3mon_data import get_travel_data as get_past_travel_data
+from non_veg_restaurant import get_NonVegRestaurant as get_non_vegrestaurant
+from sightseeing import getSightseeing as get_Sighteseeing
+from veg_restaurant import getVegRestaurant as get_vegrestaurant
+from about import get_About as get_about
+
 
 
 from dotenv import load_dotenv
@@ -44,6 +49,43 @@ def search_location(location:str):
 def get_pasttravel(location:str):
     try:
         return get_past_travel_data(location)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
+@app.get("/about")
+def get_About(location:str):
+    try:
+        return get_about(location)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
+@app.get("/nvrestaurant")
+def get_NonVegRestaurant(location:str):
+    try:
+        return get_non_vegrestaurant(location)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
+
+@app.get("/sightseeing")
+def getSightseeing(location:str):
+    try:
+        return get_Sightseeing(location)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
+@app.get("/vrestaurant")
+def getVegRestaurant(location:str):
+    try:
+        return get_vegrestaurant(location)
     except Exception as e:
         import traceback
         traceback.print_exc()
